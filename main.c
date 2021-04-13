@@ -124,13 +124,13 @@ const osThreadAttr_t phy_snd_attr = {
 };
 
 const osThreadAttr_t mac_rec_attr = {
-  .stack_size = 512,          	// Create the thread stack size of 256 bytes
+  .stack_size = 4096,          	// Create the thread stack size of 256 bytes
 	.priority = osPriorityNormal, //Set initial thread priority to normal
 //	.name = "MAC_R"  	
 };
 
 const osThreadAttr_t mac_snd_attr = {
-  .stack_size = 512,          	// Create the thread stack size of 256 bytes
+  .stack_size = 4096,          	// Create the thread stack size of 256 bytes
 	.priority = osPriorityNormal, //Set initial thread priority to normal
 //	.name = "MAC_S"  	
 };

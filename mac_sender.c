@@ -20,17 +20,33 @@
 //////////////////////////////////////////////////////////////////////////////////
 void MacSender(void *argument)
 {
-	struct queueMsg_t msg;		// Message from PHY
+	struct queueMsg_t queueMsg;		// Message from PHY
 	osStatus_t statusMsg;			// Status of queue get
+	
+	uint8_t* msg;
+	
+	const uint8_t debugMsg[] = "Msg from debug !";
 	
 	for(;;)
 	{
-		statusMsg = osMessageQueueGet(queue_macS_id,&msg,NULL,0);		// Get the queue of macR
+		statusMsg = osMessageQueueGet(queue_macS_id,&queueMsg,NULL,osWaitForever);		// Get the queue of macR
 		if(statusMsg == osOK)			// if the get is ok
 		{
-			if(msg.type == NEW_TOKEN)		// if we want a new token
+			if(queueMsg.type == NEW_TOKEN)		// if we want a new token
 			{
-				osMessageQueuePut(queue_phyS_id, &gTokenInterface,NULL, 0);
+
+				msg = osMemoryPoolAlloc(memPool,osWaitForever);													
+				msg[0] = TOKEN_TAG;
+
+				for(int i = 1; i<TOKENSIZE-3; i++)
+				{
+					msg[i] = 0;
+				}
+				queueMsg.anyPtr = msg;
+				queueMsg.type = TO_PHY;
+				//
+				osMessageQueuePut(queue_phyS_id, &queueMsg,NULL, 0);
+				//osMessageQueuePut(queue_phyS_id, &gTokenInterface,NULL, 0);
 				Ext_LED_PWM(4,100);	
 			}
 		}
